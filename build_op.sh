@@ -197,6 +197,7 @@ CONFIG_PACKAGE_iperf3=y
 CONFIG_PACKAGE_luci-app-softether=y
 CONFIG_PACKAGE_luci-app-upnp=y
 CONFIG_PACKAGE_luci-app-openclash=y
+CONFIG_PACKAGE_kmod-tun=y
 # CONFIG_PACKAGE_dnsmasq is not set
 CONFIG_PACKAGE_luci-app-smartdns=y
 CONFIG_PACKAGE_luci-app-ddns=y
@@ -217,6 +218,7 @@ CONFIG_PACKAGE_iperf3=y
 #
 CONFIG_PACKAGE_luci-app-upnp=y
 CONFIG_PACKAGE_luci-app-openclash=y
+CONFIG_PACKAGE_kmod-tun=y
 # CONFIG_PACKAGE_dnsmasq is not set
 CONFIG_PACKAGE_luci-app-smartdns=y
 #
@@ -231,6 +233,7 @@ CONFIG_PACKAGE_wget-ssl=y
 #
 CONFIG_PACKAGE_luci-app-upnp=y
 CONFIG_PACKAGE_luci-app-openclash=y
+CONFIG_PACKAGE_kmod-tun=y
 # CONFIG_PACKAGE_dnsmasq is not set
 #
 # CONFIG_PACKAGE_wpad-basic is not set
