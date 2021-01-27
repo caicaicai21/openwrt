@@ -120,23 +120,37 @@ if [ ! -f "/usr/bin/po2lmo" ];then
 	cd ../../../../
 fi
 
-if [ -d "luci-app-smartdns" ];then
-	rm -rf ./luci-app-smartdns/
-fi
-git clone https://github.com/pymumu/luci-app-smartdns.git
-check_git
-sed -i "s/include ..\/..\/luci.mk/include \$(TOPDIR)\/feeds\/luci\/luci.mk/" ./luci-app-smartdns/Makefile
-#sed -i "s/+luci-compat //" ./luci-app-smartdns/Makefile
-sed -i "/^PKG_VERSION/i\PKG_NAME:=luci-app-smartdns" ./luci-app-smartdns/Makefile
+#if [ -d "luci-app-clash" ];then
+#    rm -rf ./luci-app-clash/
+#fi
+#git clone https://github.com/frainzy1477/luci-app-clash.git
+#check_git
+#if [ ! -f "/usr/bin/po2lmo" ];then
+#	cd ./luci-app-clash/tools/po2lmo
+#	make && sudo make install
+#	cd ../../../
+#else
+#	po2lmo ./luci-app-clash/po/zh-cn/clash.po ./luci-app-clash/po/zh-cn/clash.zh-cn.lmo
+#fi
 
-if [ -d "smartdns" ];then
-	rm -rf ./smartdns/
-fi
-git clone https://github.com/pymumu/smartdns.git
-check_git
-cp -rf ./smartdns/package/openwrt ./smartdns_tmp
-rm -rf ./smartdns/
-mv ./smartdns_tmp ./smartdns
+# smartdns exist in core package
+#if [ -d "luci-app-smartdns" ];then
+#	rm -rf ./luci-app-smartdns/
+#fi
+#git clone https://github.com/pymumu/luci-app-smartdns.git
+#check_git
+#sed -i "s/include ..\/..\/luci.mk/\$(eval \$(call BuildPackage,\$(PKG_NAME)))/" ./luci-app-smartdns/Makefile
+#sed -i "/^PKG_VERSION/i\PKG_NAME:=luci-app-smartdns" ./luci-app-smartdns/Makefile
+#sed -i "/^define Package/i\include \$(INCLUDE_DIR)\/package.mk\n" ./luci-app-smartdns/Makefile
+#
+#if [ -d "smartdns" ];then
+#	rm -rf ./smartdns/
+#fi
+#git clone https://github.com/pymumu/smartdns.git
+#check_git
+#cp -rf ./smartdns/package/openwrt ./smartdns_tmp
+#rm -rf ./smartdns/
+#mv ./smartdns_tmp ./smartdns
 #sed -i '/\tuci set dhcp.@dnsmasq\[0\].noresolv=1/d' ./smartdns/files/etc/init.d/smartdns
 
 cd ../../
@@ -197,6 +211,7 @@ CONFIG_PACKAGE_iperf3=y
 CONFIG_PACKAGE_luci-app-softether=y
 CONFIG_PACKAGE_luci-app-upnp=y
 CONFIG_PACKAGE_luci-app-openclash=y
+# CONFIG_PACKAGE_luci-app-clash is not set
 CONFIG_PACKAGE_kmod-tun=y
 # CONFIG_PACKAGE_dnsmasq is not set
 CONFIG_PACKAGE_luci-app-smartdns=y
@@ -218,6 +233,7 @@ CONFIG_PACKAGE_iperf3=y
 #
 CONFIG_PACKAGE_luci-app-upnp=y
 CONFIG_PACKAGE_luci-app-openclash=y
+# CONFIG_PACKAGE_luci-app-clash is not set
 CONFIG_PACKAGE_kmod-tun=y
 # CONFIG_PACKAGE_dnsmasq is not set
 CONFIG_PACKAGE_luci-app-smartdns=y
@@ -233,6 +249,7 @@ CONFIG_PACKAGE_wget-ssl=y
 #
 CONFIG_PACKAGE_luci-app-upnp=y
 CONFIG_PACKAGE_luci-app-openclash=y
+# CONFIG_PACKAGE_luci-app-clash is not set
 CONFIG_PACKAGE_kmod-tun=y
 # CONFIG_PACKAGE_dnsmasq is not set
 #
