@@ -20,14 +20,17 @@ MODEL=x86_64
 THREADS=$(nproc)
 SKIP=0
 BATMAN=0
+UPDATE_FEEDS=0
 
-while getopts :osbt:m: OPTION; do
+while getopts :osubt:m: OPTION; do
 	case $OPTION in
 		o) ONLY_CONFIG=1
 		;;
 		m) MODEL=$OPTARG
 		;;
 		b) BATMAN=1
+		;;
+		u) UPDATE_FEEDS=1
 		;;
 		t)
 			if [ $OPTARG -gt 0 ];then
@@ -38,6 +41,7 @@ while getopts :osbt:m: OPTION; do
 		;;
 		?)
 		printf "[Usage]
+	-u: update feeds
 	-o: only create config file
 	-b: include B.A.T.M.A.N-adv
 	-t <NUMBER>: thread count, default cpu count
@@ -68,6 +72,8 @@ echo "Thread count: $THREADS"
 
 if [ -f ".config" ];then
 	make clean
+else
+	UPDATE_FEEDS=1
 fi
 
 cd package
@@ -96,7 +102,10 @@ fi
 
 cd ../../
 
-./scripts/feeds update -a
+if [ $UPDATE_FEEDS -eq 1 ];then
+	./scripts/feeds update -a
+fi
+
 ./scripts/feeds install -a
 
 rm -f ./.config*
