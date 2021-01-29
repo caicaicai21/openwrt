@@ -15,27 +15,17 @@ check_git(){
 	fi
 }
 
-mtk_devices=(
-mir3g
-newifi3
-hc5761
-)
-
 ONLY_CONFIG=0
 MODEL=x86_64
 THREADS=$(nproc)
 SKIP=0
-NATFLOW=0
 BATMAN=0
 
-while getopts :osnbt:m: OPTION; do
+while getopts :osbt:m: OPTION; do
 	case $OPTION in
 		o) ONLY_CONFIG=1
 		;;
 		m) MODEL=$OPTARG
-		;;
-		n) #NATFLOW=1
-			echo "NATFLOW disable"
 		;;
 		b) BATMAN=1
 		;;
@@ -50,7 +40,6 @@ while getopts :osnbt:m: OPTION; do
 		printf "[Usage]
 	-o: only create config file
 	-b: include B.A.T.M.A.N-adv
-	-n: use natflow (only mtk device)
 	-t <NUMBER>: thread count, default cpu count
 	-m <MODEL_NAME>: x86_64(default) mir3g newifi3 hc5761\n" >&2
 		exit 1 ;;
@@ -74,15 +63,6 @@ if [ $BATMAN -eq 1 ];then
 else
 	printf "no\n"
 fi
-if [[ ! "${mtk_devices[@]}" =~ "${MODEL}" ]];then
-	NATFLOW=0
-fi
-printf "Use Natflow: "
-if [ $NATFLOW -eq 1 ];then
-	printf "yes\n"
-else
-	printf "no\n"
-fi
 echo "Model name: $MODEL"
 echo "Thread count: $THREADS"
 
@@ -94,35 +74,16 @@ cd package
 if [ -d "custom-packages" ];then
 	rm -rf custom-packages
 fi
-mkdir custom-packages
+git clone https://github.com/caicaicai21/openwrt_custom_packages.git ./custom-packages
+check_git
 cd custom-packages
 
-if [ -d "natflow" ];then
-	rm -rf ./natflow/
-fi
-if [ -f "../../target/linux/ramips/patches-5.4/990-mtk-driver-hwnat-compat-with-natflow.patch" ];then
-	rm -rf ../../target/linux/ramips/patches-5.4/990-mtk-driver-hwnat-compat-with-natflow.patch
-fi
-if [ $NATFLOW -eq 1 ];then
-	git clone https://github.com/caicaicai21/natflow.git
-	check_git
-	mv ./natflow/990-mtk-driver-hwnat-compat-with-natflow.patch ../../target/linux/ramips/patches-5.4/990-mtk-driver-hwnat-compat-with-natflow.patch	
-fi
-
-if [ -d "OpenClash" ];then
-    rm -rf ./OpenClash/
-fi
-git clone https://github.com/caicaicai21/OpenClash.git
-check_git
 if [ ! -f "/usr/bin/po2lmo" ];then
-	cd ./OpenClash/luci-app-openclash/tools/po2lmo
+	cd ./luci-app-openclash/tools/po2lmo
 	make && sudo make install
-	cd ../../../../
+	cd ../../../
 fi
 
-#if [ -d "luci-app-clash" ];then
-#    rm -rf ./luci-app-clash/
-#fi
 #git clone https://github.com/frainzy1477/luci-app-clash.git
 #check_git
 #if [ ! -f "/usr/bin/po2lmo" ];then
@@ -132,26 +93,6 @@ fi
 #else
 #	po2lmo ./luci-app-clash/po/zh-cn/clash.po ./luci-app-clash/po/zh-cn/clash.zh-cn.lmo
 #fi
-
-# smartdns exist in core package
-#if [ -d "luci-app-smartdns" ];then
-#	rm -rf ./luci-app-smartdns/
-#fi
-#git clone https://github.com/pymumu/luci-app-smartdns.git
-#check_git
-#sed -i "s/include ..\/..\/luci.mk/\$(eval \$(call BuildPackage,\$(PKG_NAME)))/" ./luci-app-smartdns/Makefile
-#sed -i "/^PKG_VERSION/i\PKG_NAME:=luci-app-smartdns" ./luci-app-smartdns/Makefile
-#sed -i "/^define Package/i\include \$(INCLUDE_DIR)\/package.mk\n" ./luci-app-smartdns/Makefile
-#
-#if [ -d "smartdns" ];then
-#	rm -rf ./smartdns/
-#fi
-#git clone https://github.com/pymumu/smartdns.git
-#check_git
-#cp -rf ./smartdns/package/openwrt ./smartdns_tmp
-#rm -rf ./smartdns/
-#mv ./smartdns_tmp ./smartdns
-#sed -i '/\tuci set dhcp.@dnsmasq\[0\].noresolv=1/d' ./smartdns/files/etc/init.d/smartdns
 
 cd ../../
 
@@ -208,7 +149,10 @@ CONFIG_PACKAGE_nano=y
 CONFIG_PACKAGE_wget-ssl=y
 CONFIG_PACKAGE_iperf3=y
 #
-CONFIG_PACKAGE_luci-app-softether=y
+# CONFIG_PACKAGE_luci-app-netdata=y
+CONFIG_PACKAGE_luci-app-zerotier=y
+CONFIG_PACKAGE_luci-app-softethervpn=y
+#
 CONFIG_PACKAGE_luci-app-upnp=y
 CONFIG_PACKAGE_luci-app-openclash=y
 # CONFIG_PACKAGE_luci-app-clash is not set
@@ -217,6 +161,8 @@ CONFIG_PACKAGE_kmod-tun=y
 CONFIG_PACKAGE_luci-app-smartdns=y
 CONFIG_PACKAGE_luci-app-ddns=y
 CONFIG_PACKAGE_ddns-scripts=y
+CONFIG_PACKAGE_ddns-scripts-cloudflare=y
+CONFIG_PACKAGE_ddns-scripts_aliyun=y
 #
 CONFIG_TARGET_IMAGES_GZIP=y
 # CONFIG_EFI_IMAGES is not set
@@ -230,6 +176,8 @@ CONFIG_PACKAGE_htop=y
 CONFIG_PACKAGE_nano=y
 CONFIG_PACKAGE_wget-ssl=y
 CONFIG_PACKAGE_iperf3=y
+#
+CONFIG_PACKAGE_luci-app-zerotier=y
 #
 CONFIG_PACKAGE_luci-app-upnp=y
 CONFIG_PACKAGE_luci-app-openclash=y
@@ -247,6 +195,8 @@ cat >> .config <<EOF
 CONFIG_PACKAGE_nano=y
 CONFIG_PACKAGE_wget-ssl=y
 #
+CONFIG_PACKAGE_luci-app-zerotier=y
+#
 CONFIG_PACKAGE_luci-app-upnp=y
 CONFIG_PACKAGE_luci-app-openclash=y
 # CONFIG_PACKAGE_luci-app-clash is not set
@@ -262,16 +212,6 @@ fi
 if [ $BATMAN -eq 1 ];then
 cat >> .config <<EOF
 CONFIG_PACKAGE_kmod-batman-adv=y
-EOF
-fi
-
-if [ $NATFLOW -eq 1 ];then
-cat >> .config <<EOF
-CONFIG_PACKAGE_natflow-boot=y
-EOF
-else
-cat >> .config <<EOF
-# CONFIG_PACKAGE_natflow-boot is not set
 EOF
 fi
 
