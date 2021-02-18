@@ -80,7 +80,7 @@ cd package
 if [ -d "custom-packages" ];then
 	rm -rf custom-packages
 fi
-git clone https://github.com/caicaicai21/openwrt_custom_packages.git ./custom-packages
+git clone -b openwrt-19.07 https://github.com/caicaicai21/openwrt_custom_packages.git ./custom-packages
 check_git
 cd custom-packages
 
@@ -170,7 +170,7 @@ CONFIG_PACKAGE_kmod-tun=y
 CONFIG_PACKAGE_luci-app-smartdns=y
 CONFIG_PACKAGE_luci-app-ddns=y
 CONFIG_PACKAGE_ddns-scripts=y
-CONFIG_PACKAGE_ddns-scripts-cloudflare=y
+CONFIG_PACKAGE_ddns-scripts_cloudflare.com-v4=y
 CONFIG_PACKAGE_ddns-scripts_aliyun=y
 #
 CONFIG_TARGET_IMAGES_GZIP=y
