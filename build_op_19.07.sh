@@ -155,7 +155,7 @@ cat >> .config <<EOF
 CONFIG_PACKAGE_qemu-ga=y
 CONFIG_PACKAGE_htop=y
 CONFIG_PACKAGE_nano=y
-CONFIG_PACKAGE_wget-ssl=y
+CONFIG_PACKAGE_wget=y
 CONFIG_PACKAGE_iperf3=y
 #
 # CONFIG_PACKAGE_luci-app-netdata=y
@@ -183,7 +183,7 @@ elif [ "$MODEL" = "mir3g" ] || [ "$MODEL" = "newifi3" ];then
 cat >> .config <<EOF
 CONFIG_PACKAGE_htop=y
 CONFIG_PACKAGE_nano=y
-CONFIG_PACKAGE_wget-ssl=y
+CONFIG_PACKAGE_wget=y
 CONFIG_PACKAGE_iperf3=y
 #
 CONFIG_PACKAGE_luci-app-zerotier=y
@@ -202,7 +202,7 @@ EOF
 elif [ "$MODEL" = "hc5761" ];then
 cat >> .config <<EOF
 CONFIG_PACKAGE_nano=y
-CONFIG_PACKAGE_wget-ssl=y
+CONFIG_PACKAGE_wget=y
 #
 CONFIG_PACKAGE_luci-app-zerotier=y
 #
