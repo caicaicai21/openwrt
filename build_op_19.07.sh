@@ -45,7 +45,7 @@ while getopts :osubt:m: OPTION; do
 	-o: only create config file
 	-b: include B.A.T.M.A.N-adv
 	-t <NUMBER>: thread count, default cpu count
-	-m <MODEL_NAME>: x86_64(default) mir3g newifi3 hc5761\n" >&2
+	-m <MODEL_NAME>: x86_64(default) mir3g newifi3 k2p hc5761\n" >&2
 		exit 1 ;;
 	esac
 done
@@ -130,6 +130,12 @@ CONFIG_TARGET_ramips=y
 CONFIG_TARGET_ramips_mt7621=y
 CONFIG_TARGET_ramips_mt7621_DEVICE_d-team_newifi-d2=y
 EOF
+elif [ "$MODEL" = "k2p" ];then
+cat >> .config <<EOF
+CONFIG_TARGET_ramips=y
+CONFIG_TARGET_ramips_mt7621=y
+CONFIG_TARGET_ramips_mt7621_DEVICE_k2p=y
+EOF
 elif [ "$MODEL" = "hc5761" ];then
 cat >> .config <<EOF
 CONFIG_TARGET_ramips=y
@@ -167,7 +173,7 @@ CONFIG_PACKAGE_luci-app-openclash=y
 # CONFIG_PACKAGE_luci-app-clash is not set
 CONFIG_PACKAGE_kmod-tun=y
 # CONFIG_PACKAGE_dnsmasq is not set
-CONFIG_PACKAGE_luci-app-smartdns=y
+# CONFIG_PACKAGE_luci-app-smartdns is not set
 CONFIG_PACKAGE_luci-app-ddns=y
 CONFIG_PACKAGE_ddns-scripts=y
 CONFIG_PACKAGE_ddns-scripts_cloudflare.com-v4=y
@@ -179,7 +185,7 @@ CONFIG_TARGET_IMAGES_GZIP=y
 # CONFIG_VMDK_IMAGES is not set
 # # CONFIG_TARGET_IMAGES_PAD is not set
 EOF
-elif [ "$MODEL" = "mir3g" ] || [ "$MODEL" = "newifi3" ];then
+elif [ "$MODEL" = "mir3g" ] || [ "$MODEL" = "newifi3" ] || [ "$MODEL" = "k2p" ];then
 cat >> .config <<EOF
 CONFIG_PACKAGE_htop=y
 CONFIG_PACKAGE_nano=y
@@ -193,7 +199,7 @@ CONFIG_PACKAGE_luci-app-openclash=y
 # CONFIG_PACKAGE_luci-app-clash is not set
 CONFIG_PACKAGE_kmod-tun=y
 # CONFIG_PACKAGE_dnsmasq is not set
-CONFIG_PACKAGE_luci-app-smartdns=y
+# CONFIG_PACKAGE_luci-app-smartdns is not set
 #
 # CONFIG_PACKAGE_wpad-basic is not set
 # CONFIG_PACKAGE_wpad-basic-wolfssl is not set
