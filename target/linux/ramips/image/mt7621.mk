@@ -260,6 +260,13 @@ define Device/k2p
 endef
 TARGET_DEVICES += k2p
 
+define Device/k2p-32m
+  DTS := K2P-32M
+  IMAGE_SIZE := $(ralink_default_fw_size_32M)
+  DEVICE_TITLE := Phicomm K2P (32M)
+endef
+TARGET_DEVICES += k2p-32m
+
 define Device/xiaomi_mir3p
   DTS := MIR3P
   BLOCKSIZE := 128k

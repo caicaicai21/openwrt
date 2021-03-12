@@ -96,6 +96,7 @@ ramips_setup_interfaces()
 	hc5661a|\
 	hlk-rm04|\
 	k2p|\
+	k2p-32m|\
 	kn|\
 	kn_rc|\
 	mac1200rv2|\
