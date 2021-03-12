@@ -1145,6 +1145,17 @@ define Device/phicomm_k2p
 endef
 TARGET_DEVICES += phicomm_k2p
 
+define Device/phicomm_k2p-32m
+  $(Device/dsa-migration)
+  IMAGE_SIZE := 32128k
+  DEVICE_VENDOR := Phicomm
+  DEVICE_MODEL := K2P
+  DEVICE_VARIANT := 32M
+  SUPPORTED_DEVICES += k2p-32M
+  DEVICE_PACKAGES := kmod-mt7615e kmod-mt7615-firmware
+endef
+TARGET_DEVICES += phicomm_k2p-32m
+
 define Device/planex_vr500
   $(Device/dsa-migration)
   $(Device/uimage-lzma-loader)
