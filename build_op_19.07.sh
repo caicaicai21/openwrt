@@ -45,7 +45,7 @@ while getopts :osubt:m: OPTION; do
 	-o: only create config file
 	-b: include B.A.T.M.A.N-adv
 	-t <NUMBER>: thread count, default cpu count
-	-m <MODEL_NAME>: x86_64(default) mir3g newifi3 k2p hc5761\n" >&2
+	-m <MODEL_NAME>: x86_64(default) mir3g newifi3 k2p k2p-32 hc5761\n" >&2
 		exit 1 ;;
 	esac
 done
@@ -77,10 +77,19 @@ else
 fi
 
 cd package
+
+if [ -d "mtk" ];then
+	rm -rf mtk
+fi
+if [ "$MODEL" = "k2p" ] || [ "$MODEL" = "k2p-32" ];then
+	git clone -b openwrt-19.07 https://github.com/caicaicai21/k2p-openwrt-mt7615_5.0.2.0.git mtk
+	check_git
+fi
+
 if [ -d "custom-packages" ];then
 	rm -rf custom-packages
 fi
-git clone -b openwrt-19.07 https://github.com/caicaicai21/openwrt_custom_packages.git ./custom-packages
+git clone -b openwrt-19.07 https://github.com/caicaicai21/openwrt_custom_packages.git custom-packages
 check_git
 cd custom-packages
 
@@ -135,6 +144,14 @@ cat >> .config <<EOF
 CONFIG_TARGET_ramips=y
 CONFIG_TARGET_ramips_mt7621=y
 CONFIG_TARGET_ramips_mt7621_DEVICE_k2p=y
+#CONFIG_PACKAGE_kmod-mt7615e=y
+EOF
+elif [ "$MODEL" = "k2p-32" ];then
+cat >> .config <<EOF
+CONFIG_TARGET_ramips=y
+CONFIG_TARGET_ramips_mt7621=y
+CONFIG_TARGET_ramips_mt7621_DEVICE_k2p-32m=y
+#CONFIG_PACKAGE_kmod-mt7615e=y
 EOF
 elif [ "$MODEL" = "hc5761" ];then
 cat >> .config <<EOF
@@ -143,7 +160,7 @@ CONFIG_TARGET_ramips_mt7620=y
 CONFIG_TARGET_ramips_mt7620_DEVICE_hc5761=y
 EOF
 else
-	echo "Build type error, use: x86_64, rpi3, rpi4, mir3g, newifi3, hc5761"
+	echo "Build type error, use: x86_64 mir3g newifi3 k2p k2p-32 hc5761"
 	exit -1
 fi
 
@@ -185,7 +202,7 @@ CONFIG_TARGET_IMAGES_GZIP=y
 # CONFIG_VMDK_IMAGES is not set
 # # CONFIG_TARGET_IMAGES_PAD is not set
 EOF
-elif [ "$MODEL" = "mir3g" ] || [ "$MODEL" = "newifi3" ] || [ "$MODEL" = "k2p" ];then
+elif [ "$MODEL" = "mir3g" ] || [ "$MODEL" = "newifi3" ];then
 cat >> .config <<EOF
 CONFIG_PACKAGE_htop=y
 CONFIG_PACKAGE_nano=y
@@ -204,6 +221,41 @@ CONFIG_PACKAGE_kmod-tun=y
 # CONFIG_PACKAGE_wpad-basic is not set
 # CONFIG_PACKAGE_wpad-basic-wolfssl is not set
 CONFIG_PACKAGE_wpad-mesh-wolfssl=y
+EOF
+elif [ "$MODEL" = "k2p" ] || [ "$MODEL" = "k2p-32" ];then
+cat >> .config <<EOF
+CONFIG_PACKAGE_htop=y
+CONFIG_PACKAGE_nano=y
+CONFIG_PACKAGE_wget=y
+CONFIG_PACKAGE_iperf3=y
+#
+# CONFIG_PACKAGE_luci-app-zerotier is not set
+#
+CONFIG_PACKAGE_luci-app-upnp=y
+CONFIG_PACKAGE_luci-app-openclash=y
+# CONFIG_PACKAGE_luci-app-clash is not set
+CONFIG_PACKAGE_kmod-tun=y
+# CONFIG_PACKAGE_dnsmasq is not set
+# CONFIG_PACKAGE_luci-app-smartdns is not set
+#
+# CONFIG_PACKAGE_wpad-basic is not set
+# CONFIG_PACKAGE_wpad-basic-wolfssl is not set
+# CONFIG_PACKAGE_wpad-mesh-wolfssl=y
+#
+CONFIG_PACKAGE_kmod-mt_wifi=y
+CONFIG_MTK_FIRST_IF_MT7615E=y
+CONFIG_MTK_MT_WIFI=y
+CONFIG_MTK_WIFI_MODE_AP=m
+CONFIG_MTK_DOT11R_FT_SUPPORT=y
+CONFIG_PACKAGE_mtk-luci-plugin=y
+# CONFIG_PACKAGE_wireless-tools=y
+#
+# USB
+# CONFIG_PACKAGE_kmod-usb-core=y
+# CONFIG_PACKAGE_kmod-usb-ehci=y
+# CONFIG_PACKAGE_kmod-usb-storage=y
+# CONFIG_PACKAGE_kmod-usb-storage-extras=y
+# CONFIG_PACKAGE_kmod-usb2=y
 EOF
 elif [ "$MODEL" = "hc5761" ];then
 cat >> .config <<EOF
@@ -234,6 +286,7 @@ sed -i 's/^[ \t]*//g' ./.config
 make defconfig
 
 if [ $ONLY_CONFIG -eq 1 ];then
+	make menuconfig
 	exit 0
 fi
 
